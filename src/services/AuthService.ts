@@ -4,10 +4,18 @@ import {User} from "../models";
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import Service from "./Service";
+import { Response } from "express";
 class AuthService extends Service{
     register = async (data:UserModel) => {
         try{
-            const user = await User.create(data)
+            const checkEmail = await User.findOne({
+                email: data.email
+            });
+            if(checkEmail){
+                return this.response({ code: 400,  message: 'Email Already exits!', data: []});
+            }
+            const hash = await bcrypt.hash(data.password, process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
+            const user = await User.create({...data, password: hash})
             return this.response(
                 {   code: 200, 
                     message: 'Register successfull!', 
@@ -18,7 +26,7 @@ class AuthService extends Service{
         }
     }
 
-    login = async (data:LoginModel) =>{
+    login = async (data:LoginModel, res:Response) =>{
         const user = await User.findOne({email: data.email});
         if(user){
             const checkPassword =  await bcrypt.compare(data.password, user.password);
@@ -30,7 +38,7 @@ class AuthService extends Service{
                     email: user.email
                 }
                 const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc');
-
+                res.cookie(`loginToken`,`${token}`);
                 return this.response(
                     {   code: 200, 
                         message: 'Login successfull!.', 

@@ -13,7 +13,7 @@ const services_1 = require("../services");
 class AuthController {
     constructor() {
         this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.AuthService.login(req.body);
+            const response = yield services_1.AuthService.login(req.body, res);
             return res.status(response.code).json(response);
         });
         this.register = (req, res) => __awaiter(this, void 0, void 0, function* () {

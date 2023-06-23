@@ -14,9 +14,4 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./User.interface"), exports);
-__exportStar(require("./Role.interface"), exports);
-__exportStar(require("./Response.interface"), exports);
-__exportStar(require("./RequestCustom.interface"), exports);
-__exportStar(require("./Login.interface"), exports);
-__exportStar(require("./setting.interface"), exports);
+__exportStar(require("./commonHelper"), exports);

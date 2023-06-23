@@ -1,1 +1,1 @@
-export * from './RoleMiddleware'
+export * from './AuthMiddleware'
