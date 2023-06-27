@@ -26,10 +26,10 @@ const port = process.env.PORT;
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser());
-const corsConfig = {
-  origin: true
-};
-app.options('*', cors(corsConfig))
+// const corsConfig = {
+//   origin: true
+// };
+// app.options('*', cors(corsConfig))
 
 // parse application/json
 app.use(bodyParser.json())

@@ -20,3 +20,5 @@ __exportStar(require("./Response.interface"), exports);
 __exportStar(require("./RequestCustom.interface"), exports);
 __exportStar(require("./Login.interface"), exports);
 __exportStar(require("./setting.interface"), exports);
+__exportStar(require("./NumberSearch.interface"), exports);
+__exportStar(require("./Number.interface"), exports);

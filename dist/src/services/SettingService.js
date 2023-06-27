@@ -22,7 +22,6 @@ class SettingService extends Service_1.default {
                 const checkSetting = yield models_1.Setting.findOne({ user: data.user });
                 const sid = yield commonHelper_1.default.encryptedString(data.sid);
                 const token = yield commonHelper_1.default.encryptedString(data.token);
-                console.log('sid', sid);
                 let setting;
                 const updateData = Object.assign(Object.assign({}, data), { sid, token });
                 if (checkSetting) {
@@ -31,7 +30,7 @@ class SettingService extends Service_1.default {
                 else {
                     setting = yield models_1.Setting.create(updateData);
                 }
-                return this.response({ code: 201, message: 'Setting added successfully!', data: setting });
+                return this.response({ code: 201, message: 'Setting added successfully!', data: Object.assign({}, setting === null || setting === void 0 ? void 0 : setting.toJSON()) });
             }
             catch (error) {
                 console.log(error);
@@ -56,8 +55,10 @@ class SettingService extends Service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const setting = yield models_1.Setting.findOne({ user: userId });
+                console.log(setting ? yield commonHelper_1.default.decryptedString(setting.sid) : '');
+                console.log(setting ? commonHelper_1.default.decryptedString(setting.token) : '');
                 return setting
-                    ? this.response({ code: 200, message: 'Setting by user!', data: Object.assign(Object.assign({}, setting.toJSON()), { token: commonHelper_1.default.decryptedString(setting.token), sid: commonHelper_1.default.decryptedString(setting.sid) }) })
+                    ? this.response({ code: 200, message: 'Setting by user!', data: Object.assign({}, setting.toJSON()) })
                     : this.response({ code: 400, message: 'Setting not found!', data: null });
             }
             catch (error) {

@@ -4,14 +4,15 @@ import { SettingModel } from "../interfaces";
 import { Setting } from "../models";
 import Service from "./Service";
 import commonHelper from "../helpers/commonHelper";
+import TwilioHelper from "../helpers/TwilioHelper";
 
 class SettingService extends Service{
+
     async create(data:SettingModel){
         try{ 
             const checkSetting = await Setting.findOne({user: data.user});
             const sid = await commonHelper.encryptedString(data.sid)
             const token = await commonHelper.encryptedString(data.token)
-            console.log('sid',sid);
             let setting;
             const updateData = {...data, sid, token};
             if(checkSetting){
@@ -19,7 +20,7 @@ class SettingService extends Service{
             }else{
                 setting = await Setting.create(updateData);
             }
-            return this.response({code: 201, message: 'Setting added successfully!', data: setting})
+            return this.response({code: 201, message: 'Setting added successfully!', data: {...setting?.toJSON()}})
         }catch(error){
             console.log(error);
             return this.response({code: 500, message: 'Request failed due to an internal error.', data: null})
@@ -40,9 +41,10 @@ class SettingService extends Service{
     async getByUser(userId:string){
         try{
             const setting = await Setting.findOne({user: userId });
-            
+            console.log(setting ? await commonHelper.decryptedString(setting.sid) : '');
+            console.log(setting ? commonHelper.decryptedString(setting.token) : '');
             return setting 
-                ? this.response({code: 200, message: 'Setting by user!', data: {...setting.toJSON(), token: commonHelper.decryptedString(setting.token), sid: commonHelper.decryptedString(setting.sid)}}) 
+                ? this.response({code: 200, message: 'Setting by user!', data: {...setting.toJSON()}}) 
                 : this.response({code: 400, message: 'Setting not found!', data: null}) 
         }catch(error:any){
             console.log(error); 
