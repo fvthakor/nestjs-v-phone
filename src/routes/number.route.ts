@@ -8,5 +8,5 @@ numberRoute.post('/get-number',CheckAuth, NumberController.getNumbers);
 numberRoute.post('/', CheckAuth, NumberController.purchaseNumbers);
 numberRoute.get('/', CheckAuth, NumberController.getAll);
 numberRoute.get('/:id', CheckAuth, NumberController.getOne);
-
+numberRoute.delete('/:id', CheckAuth, NumberController.delete);
 export default numberRoute; 

@@ -34,6 +34,6 @@ const numberSchema = new mongoose_1.Schema({
         required: true,
     },
     number: { type: String, required: true },
-}, { toJSON: { getters: true } });
+}, { toJSON: { getters: true }, timestamps: true });
 const Number = (0, mongoose_1.model)('Number', numberSchema);
 exports.default = Number;

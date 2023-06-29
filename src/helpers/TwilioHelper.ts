@@ -1,5 +1,5 @@
 import twilio from 'twilio'
-import { NumberSearchModel } from '../interfaces';
+import { MessageModel, NumberSearchModel } from '../interfaces';
 class TwilioHelper{
     getClient = () => {
         return twilio(process.env.SID, process.env.TOKEN);
@@ -25,6 +25,13 @@ class TwilioHelper{
     deleteNumber = async(sid:string) =>{
         const client = this.getClient();
         return await client.incomingPhoneNumbers(sid).remove();
+    }
+
+    sendMessage(data:MessageModel){
+       const client = this.getClient();
+        return client.messages
+      .create({body: data.message, from: data.twilioNumber, to: data.number})
+      //.then(message => console.log(message.sid));
     }
 }
 

@@ -54,6 +54,7 @@ class NumberService extends Service{
 
     async getAll(req:RequestCustom){
         try{
+            console.log(req.userId);
             const numbers = await Number.find({user: req.userId});
             return this.response({code: 200, message: 'All Numbers', data: numbers}) 
         }catch(error){
@@ -61,7 +62,7 @@ class NumberService extends Service{
         }
     }
 
-    async delete(id:number){
+    async delete(id:string){
         try{
             const number = await Number.findById(id);
             // await TwilioHelper.deleteNumber(setting?.sid ? setting.sid : '');

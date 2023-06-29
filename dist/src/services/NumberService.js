@@ -72,6 +72,7 @@ class NumberService extends Service_1.default {
     getAll(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(req.userId);
                 const numbers = yield models_1.Number.find({ user: req.userId });
                 return this.response({ code: 200, message: 'All Numbers', data: numbers });
             }

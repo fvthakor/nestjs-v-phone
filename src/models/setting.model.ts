@@ -12,7 +12,7 @@ const settingSchema = new Schema<SettingModel>({
         required: true,
     },
     token: {type: String, required: true},
-}, { toJSON: { getters: true } });
+}, { toJSON: { getters: true }, timestamps:true });
 
 const Setting = model<SettingModel>('Setting', settingSchema);
 

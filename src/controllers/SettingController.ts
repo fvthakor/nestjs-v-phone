@@ -6,7 +6,7 @@ class SettingController{
     constructor(){
         
     }
-
+    
     create = async(req: RequestCustom, res: Response) => {
         const response = await SettingService.create({...req.body, user: req.userId});
         return res.status(response.code).json(response);

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
@@ -18,7 +19,9 @@ dotenv_1.default.config({
 const routes_1 = require("./src/routes");
 const database_1 = __importDefault(require("./config/database"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const socket_io_1 = require("socket.io");
 // import { cipher, decipher } from './src/helpers';
+const http_1 = __importDefault(require("http"));
 const app = (0, express_1.default)();
 const crosOptions = { credential: true, origin: ["http://localhost:3000", "http://localhost:3001"] };
 app.use((0, cors_1.default)());
@@ -37,6 +40,35 @@ database_1.default.then(() => {
 }).catch((error) => {
     console.log('Error while connecting database', error.message);
 });
+const server = http_1.default.createServer(app);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: '*',
+    }
+});
+exports.io = io;
+// io.on('connect', (socket:Socket) => {
+//   console.log('socket connected successfuly!');
+//  // handle various socket connections here
+// });
+io.on('connection', socket => {
+    console.log('a user connected');
+    //socket.join(/* ... */);
+    socket.on('user_connected', (channel) => {
+        console.log(`${channel} user joined channel`);
+        socket.join(channel);
+    });
+    // socket.on('join_profile_channel', (channel) => {
+    //   console.log(`${channel} user joined channel`);
+    //   socket.join(channel);
+    // });
+});
+// connectSocket(io);
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+// global.Attr('io', io);
 app.use("/api/", routes_1.restRouter);
 app.get('/', (req, res) => {
     res.send('Express + TypeScript Server');
@@ -47,6 +79,6 @@ app.get('/', (req, res) => {
 // const decipherString = decipher('testtesttest');
 // const newString = decipherString(enString);
 // console.log('newString', newString);
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

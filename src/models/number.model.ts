@@ -12,7 +12,7 @@ const numberSchema = new Schema<NumberModel>({
         required: true,
     },
     number: {type: String, required: true},
-}, { toJSON: { getters: true } });
+}, { toJSON: { getters: true } , timestamps:true});
 
 const Number = model<NumberModel>('Number', numberSchema);
 

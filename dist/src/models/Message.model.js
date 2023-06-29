@@ -24,16 +24,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const settingSchema = new mongoose_1.Schema({
+const messageSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'User'
     },
+    number: { type: String, required: true },
+    twilioNumber: { type: String, required: true },
     sid: {
         type: String,
         required: true,
     },
-    token: { type: String, required: true },
+    type: {
+        type: String,
+        enum: ["send", "receive"],
+        default: "send"
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    isview: {
+        type: Boolean,
+        default: false
+    }
 }, { toJSON: { getters: true }, timestamps: true });
-const Setting = (0, mongoose_1.model)('Setting', settingSchema);
-exports.default = Setting;
+const Message = (0, mongoose_1.model)('Message', messageSchema);
+exports.default = Message;

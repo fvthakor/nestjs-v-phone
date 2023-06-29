@@ -38,5 +38,11 @@ class TwilioHelper {
             return yield client.incomingPhoneNumbers(sid).remove();
         });
     }
+    sendMessage(data) {
+        const client = this.getClient();
+        return client.messages
+            .create({ body: data.message, from: data.twilioNumber, to: data.number });
+        //.then(message => console.log(message.sid));
+    }
 }
 exports.default = new TwilioHelper();

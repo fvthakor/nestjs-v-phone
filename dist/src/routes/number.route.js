@@ -11,4 +11,5 @@ numberRoute.post('/get-number', middleware_1.CheckAuth, controllers_1.NumberCont
 numberRoute.post('/', middleware_1.CheckAuth, controllers_1.NumberController.purchaseNumbers);
 numberRoute.get('/', middleware_1.CheckAuth, controllers_1.NumberController.getAll);
 numberRoute.get('/:id', middleware_1.CheckAuth, controllers_1.NumberController.getOne);
+numberRoute.delete('/:id', middleware_1.CheckAuth, controllers_1.NumberController.delete);
 exports.default = numberRoute;

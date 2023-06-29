@@ -13,8 +13,8 @@ class NumberController{
     }
 
     purchaseNumbers = async (req: RequestCustom, res: Response) => {
-        const response = await NumberService.purchaseNumbers(req.body.phoneNumbers, req.userId ? req.userId : '');
-        // return res.status(response.code).json(response);
+        const response = await NumberService.purchaseNumbers(req.body.numbers, req.userId ? req.userId : '');
+        return res.status(response.code).json(response);
     }
 
     getOne = async(req:Request, res:Response) => {
@@ -28,7 +28,7 @@ class NumberController{
     }
     
     delete = async(req:Request, res:Response) => {
-        const response = await NumberService.delete(+req.params.id);
+        const response = await NumberService.delete(req.params.id);
         return res.status(response.code).json(response);
     }
 }

@@ -10,28 +10,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const services_1 = require("../services");
-class NumberController {
+class MessageController {
     constructor() {
-        this.getNumbers = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.getNumbers(req.body);
+        this.sendMessage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.MessageService.sendMessage(Object.assign(Object.assign({}, req.body), { user: req.userId ? req.userId : '' }));
             return res.status(response.code).json(response);
         });
-        this.purchaseNumbers = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.purchaseNumbers(req.body.numbers, req.userId ? req.userId : '');
+        this.receiveMessage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.MessageService.receiveMessage(req);
+            console.log(response.toString());
+            res.set('Content-Type', 'text/xml');
+            res.send(response.toString());
+        });
+        this.getMessages = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.MessageService.getMessages(req.body.number, req.userId ? req.userId : '');
             return res.status(response.code).json(response);
         });
-        this.getOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.getOne(req.params.id);
+        this.numberList = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.MessageService.numberList(req);
             return res.status(response.code).json(response);
         });
         this.getAll = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.getAll(req);
+            const response = yield services_1.MessageService.getAll(req);
             return res.status(response.code).json(response);
         });
         this.delete = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.delete(req.params.id);
+            const response = yield services_1.MessageService.delete(req.params.id);
             return res.status(response.code).json(response);
         });
     }
 }
-exports.default = new NumberController();
+exports.default = new MessageController();
