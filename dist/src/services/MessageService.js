@@ -34,6 +34,7 @@ class MessageService extends Service_1.default {
             }
         });
         this.receiveMessage = (req) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
             const response = new VoiceResponse();
             try {
@@ -49,7 +50,8 @@ class MessageService extends Service_1.default {
                         twilioNumber: To,
                         isview: false
                     };
-                    yield models_1.Message.create(messageData);
+                    const message = yield models_1.Message.create(messageData);
+                    (_a = req.io) === null || _a === void 0 ? void 0 : _a.to(`${number.user}`).emit('receiveMessage', message);
                 }
             }
             catch (error) {
@@ -92,6 +94,15 @@ class MessageService extends Service_1.default {
             try {
                 yield models_1.Message.updateMany({ user: user_id, number, isview: false }, { isview: true });
                 const messages = yield models_1.Message.find({ number, user: user_id });
+                return this.response({ code: 200, message: 'Message List', data: messages });
+            }
+            catch (error) {
+                return this.response({ code: 500, message: error.message, data: [] });
+            }
+        });
+        this.readMessage = (number, user_id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const messages = yield models_1.Message.updateMany({ user: user_id, number, isview: false }, { isview: true });
                 return this.response({ code: 200, message: 'Message List', data: messages });
             }
             catch (error) {

@@ -24,6 +24,11 @@ class MessageController{
         return res.status(response.code).json(response);
     }
 
+    readMessage = async(req:RequestCustom, res:Response) => {
+        const response = await MessageService.readMessage(req.body.number, req.userId ? req.userId : '');
+        return res.status(response.code).json(response);
+    }
+
     numberList = async (req:RequestCustom, res: Response) => {
         const response = await MessageService.numberList(req);
         return res.status(response.code).json(response);

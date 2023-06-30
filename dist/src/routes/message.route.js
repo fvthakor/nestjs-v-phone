@@ -11,5 +11,6 @@ messageRoute.post('/receive-sms', controllers_1.MessageController.receiveMessage
 messageRoute.post('/', middleware_1.CheckAuth, controllers_1.MessageController.sendMessage);
 messageRoute.get('/number-list', middleware_1.CheckAuth, controllers_1.MessageController.numberList);
 messageRoute.post('/get-messages', middleware_1.CheckAuth, controllers_1.MessageController.getMessages);
+messageRoute.post('/read-messages', middleware_1.CheckAuth, controllers_1.MessageController.readMessage);
 messageRoute.delete('/:id', middleware_1.CheckAuth, controllers_1.MessageController.delete);
 exports.default = messageRoute;

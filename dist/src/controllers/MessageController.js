@@ -26,6 +26,10 @@ class MessageController {
             const response = yield services_1.MessageService.getMessages(req.body.number, req.userId ? req.userId : '');
             return res.status(response.code).json(response);
         });
+        this.readMessage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.MessageService.readMessage(req.body.number, req.userId ? req.userId : '');
+            return res.status(response.code).json(response);
+        });
         this.numberList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const response = yield services_1.MessageService.numberList(req);
             return res.status(response.code).json(response);

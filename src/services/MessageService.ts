@@ -28,7 +28,7 @@ class MessageService extends Service{
         }
     }
 
-    receiveMessage = async(req:Request) => {
+    receiveMessage = async(req:RequestCustom) => {
         const VoiceResponse = twilio.twiml.VoiceResponse;
         const response = new VoiceResponse();
         try{
@@ -44,7 +44,8 @@ class MessageService extends Service{
                     twilioNumber: To,
                     isview: false
                 }
-                await Message.create(messageData);
+                const message = await Message.create(messageData);
+                req.io?.to(`${number.user}`).emit('receiveMessage',message);
             }
         }catch(error:any){
             //console.log(error.message);
@@ -92,7 +93,16 @@ class MessageService extends Service{
         }catch(error:any){
             return this.response({code: 500, message: error.message, data: []})
         }
-    } 
+    }
+    
+    readMessage = async (number:string, user_id:string) => {
+        try{
+            const messages = await Message.updateMany({user: user_id, number, isview: false}, {isview: true});
+            return this.response({code: 200, message: 'Message List', data: messages})
+        }catch(error:any){
+            return this.response({code: 500, message: error.message, data: []})
+        }
+    }
 
     async getAll(req:RequestCustom){
         try{
