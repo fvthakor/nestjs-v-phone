@@ -1,5 +1,5 @@
 import express from "express";
-import { MessageController, NumberController, SettingController } from "../controllers";
+import { MessageController } from "../controllers";
 import { CheckAuth } from "../middleware";
 
 const messageRoute = express.Router();

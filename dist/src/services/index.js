@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessageService = exports.NumberService = exports.SettingService = exports.UserService = exports.AuthService = void 0;
+exports.ContactService = exports.MessageService = exports.NumberService = exports.SettingService = exports.UserService = exports.AuthService = void 0;
 const AuthService_1 = __importDefault(require("./AuthService"));
 exports.AuthService = AuthService_1.default;
 const UserService_1 = __importDefault(require("./UserService"));
@@ -14,3 +14,5 @@ const NumberService_1 = __importDefault(require("./NumberService"));
 exports.NumberService = NumberService_1.default;
 const MessageService_1 = __importDefault(require("./MessageService"));
 exports.MessageService = MessageService_1.default;
+const ContactService_1 = __importDefault(require("./ContactService"));
+exports.ContactService = ContactService_1.default;
