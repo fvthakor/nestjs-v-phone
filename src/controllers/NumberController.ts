@@ -27,8 +27,8 @@ class NumberController{
         return res.status(response.code).json(response);
     }
     
-    delete = async(req:Request, res:Response) => {
-        const response = await NumberService.delete(req.params.id);
+    delete = async(req:RequestCustom, res:Response) => {
+        const response = await NumberService.delete(req.params.id, req.userId ? req.userId : '');
         return res.status(response.code).json(response);
     }
 }

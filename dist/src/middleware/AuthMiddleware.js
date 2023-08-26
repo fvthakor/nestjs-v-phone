@@ -45,7 +45,7 @@ const CheckAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const accessToken = process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc';
         const decoded = yield jwt.verify(authHeader, accessToken);
         if (decoded) {
-            console.log('decode', decoded);
+            //console.log('decode', decoded);
             req.userId = decoded._id;
             return next();
         }

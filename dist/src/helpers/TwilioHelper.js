@@ -33,16 +33,73 @@ class TwilioHelper {
                 smsUrl: `${process.env.BASE_URL}/message/receive-sms`,
             });
         });
-        this.deleteNumber = (sid) => __awaiter(this, void 0, void 0, function* () {
-            const client = this.getClient();
-            return yield client.incomingPhoneNumbers(sid).remove();
+        this.combineURLs = (...urls) => {
+            let output = urls[0];
+            for (let i = 1; i < urls.length; i++) {
+                output = output.replace(/\/+$/, '') + '/' + urls[i].replace(/^\/+/, '');
+            }
+            return output;
+        };
+        this.creatTwiml = (sid, token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const client = (0, twilio_1.default)(sid, token);
+                var twiml = yield client.applications.create({
+                    voiceMethod: "POST",
+                    voiceUrl: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "api/voip/make-call"),
+                    statusCallback: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "api/voip/call-status"),
+                    statusCallbackMethod: "POST",
+                    friendlyName: "VPhone",
+                });
+                return twiml.sid;
+            }
+            catch (e) {
+                console.log(e);
+                return false;
+            }
+        });
+        this.creatAPIKey = (sid, token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const client = (0, twilio_1.default)(sid, token);
+                var apiKey = yield client.newKeys.create({ friendlyName: 'VPhone call API Key' });
+                return apiKey;
+            }
+            catch (e) {
+                console.log(e);
+                return false;
+            }
+        });
+        this.removeAPIKey = (sid, token, api_key) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const client = (0, twilio_1.default)(sid, token);
+                yield client.keys(api_key).remove();
+                return true;
+            }
+            catch (e) {
+                return false;
+            }
+        });
+        this.deleteTwiml = (sid, token, twimlsid) => __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    const client = (0, twilio_1.default)(sid, token);
+                    yield client.applications(twimlsid).remove();
+                    resolve(true);
+                }
+                catch (e) {
+                    console.log(e);
+                    resolve(false);
+                }
+            }));
+        });
+        this.deleteNumber = (sid, token, phoneSid) => __awaiter(this, void 0, void 0, function* () {
+            const client = (0, twilio_1.default)(sid, token);
+            return yield client.incomingPhoneNumbers(phoneSid).remove();
         });
     }
-    sendMessage(data) {
-        const client = this.getClient();
+    sendMessage(data, sid, token) {
+        const client = (0, twilio_1.default)(sid, token);
         return client.messages
             .create({ body: data.message, from: data.twilioNumber, to: data.number });
-        //.then(message => console.log(message.sid));
     }
 }
 exports.default = new TwilioHelper();

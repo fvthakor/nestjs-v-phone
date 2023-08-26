@@ -23,9 +23,6 @@ import { GlobalInterface } from './src/interfaces/Gloable.interface';
 import RequestCustom from './src/interfaces/RequestCustom.interface';
 const app: Express = express();
 
-const crosOptions = {credential: true, origin: ["http://localhost:3000", "http://localhost:3001" ]};
-app.use(cors())
-
 const port = process.env.PORT;
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -37,6 +34,12 @@ app.use(cookieParser());
 
 // parse application/json
 app.use(bodyParser.json())
+
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+app.use(cors(corsConfig));
 
 Mongoose.then(() => {
   console.log('database connected successfully!')
