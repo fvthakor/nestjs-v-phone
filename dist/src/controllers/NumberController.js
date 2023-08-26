@@ -29,7 +29,7 @@ class NumberController {
             return res.status(response.code).json(response);
         });
         this.delete = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.NumberService.delete(req.params.id);
+            const response = yield services_1.NumberService.delete(req.params.id, req.userId ? req.userId : '');
             return res.status(response.code).json(response);
         });
     }

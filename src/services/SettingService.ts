@@ -11,11 +11,44 @@ class SettingService extends Service{
     async create(data:SettingModel){
         try{ 
             const checkSetting = await Setting.findOne({user: data.user});
+            const twiml_app = await TwilioHelper.creatTwiml(
+                data.sid,
+                data.token
+            );
+            if(twiml_app){
+                data.twiml_app = twiml_app
+                const appData = await TwilioHelper.creatAPIKey(
+                    data.sid,
+                    data.token
+                );
+                if(appData){
+                    data.app_key = appData.sid;
+                    data.app_secret = appData.secret;
+                }else{
+                    return this.response({code: 400, message: 'Something was wrong!', data: null}) 
+                }
+            }else{
+                return this.response({code: 400, message: 'Something was wrong!', data: null})
+            }
             const sid = await commonHelper.encryptedString(data.sid)
             const token = await commonHelper.encryptedString(data.token)
             let setting;
             const updateData = {...data, sid, token};
             if(checkSetting){
+                if(checkSetting.app_key){
+                    await TwilioHelper.removeAPIKey(
+                        checkSetting.sid,
+                        checkSetting.token,
+                        checkSetting.app_key
+                      );
+                }
+                if(checkSetting.twiml_app){
+                    await TwilioHelper.deleteTwiml(
+                        checkSetting.sid,
+                        checkSetting.token,
+                        checkSetting.twiml_app
+                      );
+                }
                 setting = await Setting.findOneAndUpdate({user: data.user}, updateData, {new: true});
             }else{
                 setting = await Setting.create(updateData);

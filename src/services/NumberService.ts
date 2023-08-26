@@ -1,5 +1,5 @@
 import { NumberSearchModel } from "../interfaces";
-import { Number } from "../models";
+import { Number, Setting } from "../models";
 import Service from "./Service";
 import { TwilioHelper } from "../helpers";
 import RequestCustom from "../interfaces/RequestCustom.interface";
@@ -19,10 +19,10 @@ class NumberService extends Service{
             const numbersData = [];
             // const number = []
             for(let number of numbers){
-                //const purchasedNumber = await TwilioHelper.purchaseNumber(number);
-                const purchasedNumber = {
-                    sid: `ABABABABABAABBABB-${new Date().getTime()}`
-                }
+                const purchasedNumber = await TwilioHelper.purchaseNumber(number);
+                // const purchasedNumber = {
+                //     sid: `ABABABABABAABBABB-${new Date().getTime()}`
+                // }
                 numbersData.push({
                     user: userId,
                     sid: purchasedNumber.sid,
@@ -62,11 +62,14 @@ class NumberService extends Service{
         }
     }
 
-    async delete(id:string){
+    async delete(id:string, userId:string){
         try{
             const number = await Number.findById(id);
-            // await TwilioHelper.deleteNumber(setting?.sid ? setting.sid : '');
             if(number){
+                const setting = await Setting.findOne({user: userId})
+                if(setting){
+                    await TwilioHelper.deleteNumber(setting.sid, setting.token, number.sid  ? number.sid : '');
+                }
                 await number.deleteOne();
                 return this.response({code: 200, message: 'Number deleted successfully!', data: number}) 
             }else{

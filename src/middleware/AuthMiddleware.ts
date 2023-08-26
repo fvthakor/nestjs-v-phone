@@ -14,7 +14,7 @@ export const CheckAuth = async (req:RequestCustom, res:Response, next:NextFuncti
             const accessToken = process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc'
             const decoded:any = await jwt.verify(authHeader, accessToken);
             if(decoded){
-                console.log('decode', decoded);
+                //console.log('decode', decoded);
                 req.userId = decoded._id;
                 return next();
             }else{

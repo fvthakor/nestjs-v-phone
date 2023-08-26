@@ -23,8 +23,6 @@ const socket_io_1 = require("socket.io");
 // import { cipher, decipher } from './src/helpers';
 const http_1 = __importDefault(require("http"));
 const app = (0, express_1.default)();
-const crosOptions = { credential: true, origin: ["http://localhost:3000", "http://localhost:3001"] };
-app.use((0, cors_1.default)());
 const port = process.env.PORT;
 // parse application/x-www-form-urlencoded
 app.use(body_parser_1.default.urlencoded({ extended: false }));
@@ -35,6 +33,11 @@ app.use((0, cookie_parser_1.default)());
 // app.options('*', cors(corsConfig))
 // parse application/json
 app.use(body_parser_1.default.json());
+const corsConfig = {
+    credentials: true,
+    origin: true,
+};
+app.use((0, cors_1.default)(corsConfig));
 database_1.default.then(() => {
     console.log('database connected successfully!');
 }).catch((error) => {

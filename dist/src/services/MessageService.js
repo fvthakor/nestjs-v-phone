@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const Service_1 = __importDefault(require("./Service"));
+const helpers_1 = require("../helpers");
 const twilio_1 = __importDefault(require("twilio"));
 const mongoose_1 = __importDefault(require("mongoose"));
 class MessageService extends Service_1.default {
@@ -21,13 +22,19 @@ class MessageService extends Service_1.default {
         super(...arguments);
         this.sendMessage = (data) => __awaiter(this, void 0, void 0, function* () {
             try {
-                //const sendMessage = await TwilioHelper.sendMessage(data);
-                const sendMessage = {
-                    sid: `MESSAGE_FACK_ID-XXXXXXXX-${new Date().getTime()}`
-                };
-                const messageData = Object.assign(Object.assign({}, data), { sid: sendMessage.sid, type: 'send', isview: true });
-                const message = yield models_1.Message.create(messageData);
-                return this.response({ code: 200, message: 'Message send successfully!', data: message });
+                const setting = yield models_1.Setting.findOne({ user: data.user });
+                if (setting) {
+                    console.log('data');
+                    console.log(data);
+                    console.log(setting);
+                    const sendMessage = yield helpers_1.TwilioHelper.sendMessage(data, setting.sid, setting.token);
+                    const messageData = Object.assign(Object.assign({}, data), { sid: sendMessage.sid, type: 'send', isview: true });
+                    const message = yield models_1.Message.create(messageData);
+                    return this.response({ code: 200, message: 'Message send successfully!', data: message });
+                }
+                else {
+                    return this.response({ code: 400, message: 'Setting not found! Please add first setting!', data: null });
+                }
             }
             catch (error) {
                 return this.response({ code: 500, message: error.message, data: null });
@@ -55,7 +62,7 @@ class MessageService extends Service_1.default {
                 }
             }
             catch (error) {
-                //console.log(error.message);
+                console.log(error.message);
                 //return this.response({code: 500, message: error.message, data: null})
             }
             return response;

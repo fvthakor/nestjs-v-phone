@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const helpers_1 = require("../helpers");
 const settingSchema = new mongoose_1.Schema({
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
@@ -32,8 +33,21 @@ const settingSchema = new mongoose_1.Schema({
     sid: {
         type: String,
         required: true,
+        get: (value) => {
+            return value
+                ? helpers_1.commonHelper.decryptedString(value)
+                : '';
+        }
     },
-    token: { type: String, required: true },
+    token: { type: String, required: true,
+        get: (value) => {
+            return value
+                ? helpers_1.commonHelper.decryptedString(value)
+                : '';
+        } },
+    app_key: { type: String },
+    app_secret: { type: String },
+    twiml_app: { type: String },
 }, { toJSON: { getters: true }, timestamps: true });
 const Setting = (0, mongoose_1.model)('Setting', settingSchema);
 exports.default = Setting;

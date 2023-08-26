@@ -1,5 +1,5 @@
 import { MessageModel, NumberSearchModel } from "../interfaces";
-import { Message, Number } from "../models";
+import { Message, Number, Setting } from "../models";
 import Service from "./Service";
 import { TwilioHelper } from "../helpers";
 import RequestCustom from "../interfaces/RequestCustom.interface";
@@ -10,19 +10,23 @@ import mongoose from "mongoose";
 class MessageService extends Service{
     sendMessage = async(data: MessageModel) => {
         try{
-            //const sendMessage = await TwilioHelper.sendMessage(data);
-            const sendMessage = {
-                sid: `MESSAGE_FACK_ID-XXXXXXXX-${new Date().getTime()}`
+            const setting = await Setting.findOne({user: data.user});
+            if(setting){
+                console.log('data');
+                console.log(data);
+                console.log(setting);
+                const sendMessage = await TwilioHelper.sendMessage(data, setting.sid, setting.token);
+                const messageData:MessageModel = {
+                    ...data,
+                    sid: sendMessage.sid,
+                    type: 'send',
+                    isview: true
+                }
+                const message = await Message.create(messageData);
+                return this.response({code: 200, message: 'Message send successfully!', data: message})
+            }else{
+                return this.response({code: 400, message: 'Setting not found! Please add first setting!', data: null})
             }
-            
-            const messageData:MessageModel = {
-                ...data,
-                sid: sendMessage.sid,
-                type: 'send',
-                isview: true
-            }
-            const message = await Message.create(messageData);
-            return this.response({code: 200, message: 'Message send successfully!', data: message})
         }catch(error:any){
             return this.response({code: 500, message: error.message, data: null})
         }
@@ -48,7 +52,7 @@ class MessageService extends Service{
                 req.io?.to(`${number.user}`).emit('receiveMessage',message);
             }
         }catch(error:any){
-            //console.log(error.message);
+            console.log(error.message);
             //return this.response({code: 500, message: error.message, data: null})
         }  
         return response;

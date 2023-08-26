@@ -32,10 +32,10 @@ class NumberService extends Service_1.default {
                 const numbersData = [];
                 // const number = []
                 for (let number of numbers) {
-                    //const purchasedNumber = await TwilioHelper.purchaseNumber(number);
-                    const purchasedNumber = {
-                        sid: `ABABABABABAABBABB-${new Date().getTime()}`
-                    };
+                    const purchasedNumber = yield helpers_1.TwilioHelper.purchaseNumber(number);
+                    // const purchasedNumber = {
+                    //     sid: `ABABABABABAABBABB-${new Date().getTime()}`
+                    // }
                     numbersData.push({
                         user: userId,
                         sid: purchasedNumber.sid,
@@ -81,12 +81,15 @@ class NumberService extends Service_1.default {
             }
         });
     }
-    delete(id) {
+    delete(id, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const number = yield models_1.Number.findById(id);
-                // await TwilioHelper.deleteNumber(setting?.sid ? setting.sid : '');
                 if (number) {
+                    const setting = yield models_1.Setting.findOne({ user: userId });
+                    if (setting) {
+                        yield helpers_1.TwilioHelper.deleteNumber(setting.sid, setting.token, number.sid ? number.sid : '');
+                    }
                     yield number.deleteOne();
                     return this.response({ code: 200, message: 'Number deleted successfully!', data: number });
                 }

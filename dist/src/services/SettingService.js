@@ -15,16 +15,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const Service_1 = __importDefault(require("./Service"));
 const commonHelper_1 = __importDefault(require("../helpers/commonHelper"));
+const TwilioHelper_1 = __importDefault(require("../helpers/TwilioHelper"));
 class SettingService extends Service_1.default {
     create(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const checkSetting = yield models_1.Setting.findOne({ user: data.user });
+                const twiml_app = yield TwilioHelper_1.default.creatTwiml(data.sid, data.token);
+                if (twiml_app) {
+                    data.twiml_app = twiml_app;
+                    const appData = yield TwilioHelper_1.default.creatAPIKey(data.sid, data.token);
+                    if (appData) {
+                        data.app_key = appData.sid;
+                        data.app_secret = appData.secret;
+                    }
+                    else {
+                        return this.response({ code: 400, message: 'Something was wrong!', data: null });
+                    }
+                }
+                else {
+                    return this.response({ code: 400, message: 'Something was wrong!', data: null });
+                }
                 const sid = yield commonHelper_1.default.encryptedString(data.sid);
                 const token = yield commonHelper_1.default.encryptedString(data.token);
                 let setting;
                 const updateData = Object.assign(Object.assign({}, data), { sid, token });
                 if (checkSetting) {
+                    if (checkSetting.app_key) {
+                        yield TwilioHelper_1.default.removeAPIKey(checkSetting.sid, checkSetting.token, checkSetting.app_key);
+                    }
+                    if (checkSetting.twiml_app) {
+                        yield TwilioHelper_1.default.deleteTwiml(checkSetting.sid, checkSetting.token, checkSetting.twiml_app);
+                    }
                     setting = yield models_1.Setting.findOneAndUpdate({ user: data.user }, updateData, { new: true });
                 }
                 else {
