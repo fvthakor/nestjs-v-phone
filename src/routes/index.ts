@@ -5,6 +5,7 @@ import settingRoute from "./setting.route";
 import numberRoute from "./number.route";
 import messageRoute from "./message.route";
 import contactRoute from "./contact.route";
+import callRoute from "./call.route";
 
 const restRouter = express.Router();
 
@@ -14,5 +15,6 @@ restRouter.use('/setting', settingRoute);
 restRouter.use('/number', numberRoute);
 restRouter.use('/message', messageRoute);
 restRouter.use('/contact', contactRoute);
+restRouter.use('/call', callRoute);
 
 export{ restRouter };

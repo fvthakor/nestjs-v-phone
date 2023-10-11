@@ -87,6 +87,14 @@ class AuthService extends Service_1.default {
                 return this.response({ code: 400, message: 'Email or Password is wrong!.', data: null });
             }
         });
+        this.logout = (userId, res) => __awaiter(this, void 0, void 0, function* () {
+            //res.cookie(`loginToken`,`${token}`);
+            res.clearCookie("loginToken");
+            return this.response({ code: 200,
+                message: 'Logout successfull!.',
+                data: {},
+            });
+        });
     }
 }
 exports.default = new AuthService();

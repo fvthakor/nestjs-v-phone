@@ -51,6 +51,16 @@ class AuthService extends Service{
             return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
         }
     }
+
+    logout =async (userId:string, res:Response)=>{
+        //res.cookie(`loginToken`,`${token}`);
+        res.clearCookie("loginToken");
+        return this.response(
+            {   code: 200, 
+                message: 'Logout successfull!.', 
+                data: {}, 
+            })
+    }
 }
 
 export default new AuthService();

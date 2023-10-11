@@ -20,6 +20,10 @@ class AuthController {
             const response = yield services_1.AuthService.register(req.body);
             return res.status(response.code).json(response);
         });
+        this.logout = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.AuthService.logout(req.userId ? req.userId : '', res);
+            return res.status(response.code).json(response);
+        });
     }
 }
 exports.default = new AuthController();
