@@ -45,6 +45,7 @@ database_1.default.then(() => {
 });
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
+    path: "/api/socket-server",
     cors: {
         origin: '*',
     }
@@ -65,6 +66,7 @@ io.on('connection', socket => {
     //   console.log(`${channel} user joined channel`);
     //   socket.join(channel);
     // });
+    //socket.emit('message', {type:'message', data:'test 001'});
 });
 // connectSocket(io);
 app.use((req, res, next) => {

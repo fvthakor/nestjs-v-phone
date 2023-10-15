@@ -49,7 +49,12 @@ class MessageService extends Service{
                     isview: false
                 }
                 const message = await Message.create(messageData);
-                req.io?.to(`${number.user}`).emit('receiveMessage',message);
+                // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+
+                req.io?.to(`${number.user}`).emit("message", {
+                    type: 'receiveMessage',
+                    data: message,
+                });
             }
         }catch(error:any){
             console.log(error.message);

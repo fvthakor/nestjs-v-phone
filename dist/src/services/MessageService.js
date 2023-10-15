@@ -58,7 +58,11 @@ class MessageService extends Service_1.default {
                         isview: false
                     };
                     const message = yield models_1.Message.create(messageData);
-                    (_a = req.io) === null || _a === void 0 ? void 0 : _a.to(`${number.user}`).emit('receiveMessage', message);
+                    // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+                    (_a = req.io) === null || _a === void 0 ? void 0 : _a.to(`${number.user}`).emit("message", {
+                        type: 'receiveMessage',
+                        data: message,
+                    });
                 }
             }
             catch (error) {

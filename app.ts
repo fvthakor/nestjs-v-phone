@@ -49,6 +49,7 @@ Mongoose.then(() => {
 
 const server = http.createServer(app);
 const io  = new Server(server, {
+  path: "/api/socket-server",
   cors: {
     origin: '*',
   }
@@ -70,6 +71,7 @@ io.on('connection', socket => {
   //   console.log(`${channel} user joined channel`);
   //   socket.join(channel);
   // });
+  //socket.emit('message', {type:'message', data:'test 001'});
 });
 // connectSocket(io);
 
