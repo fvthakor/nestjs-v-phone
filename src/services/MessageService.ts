@@ -12,10 +12,7 @@ class MessageService extends Service{
         try{
             const setting = await Setting.findOne({user: data.user});
             if(setting){
-                console.log('data');
-                console.log(data);
-                console.log(setting);
-                const sendMessage = await TwilioHelper.sendMessage(data, setting.sid, setting.token);
+                const sendMessage = process.env.MODE === 'developer' ? {sid: 'TEST-54654564665464-fsdffs'} : await TwilioHelper.sendMessage(data, setting.sid, setting.token);
                 const messageData:MessageModel = {
                     ...data,
                     sid: sendMessage.sid,
@@ -37,25 +34,26 @@ class MessageService extends Service{
         const response = new VoiceResponse();
         try{
             const { Body, To, From, SmsSid } = req.body;
-            const number = await Number.findOne({number: To});
-            if(number){
-                const messageData:MessageModel = {
-                    message: Body,
-                    sid: SmsSid,
-                    type: 'receive',
-                    user: number.user,
-                    number: From,
-                    twilioNumber: To,
-                    isview: false
+            Setting.findOne({number: To}).then(async (number) => {
+                if(number){
+                    const messageData:MessageModel = {
+                        message: Body,
+                        sid: SmsSid,
+                        type: 'receive',
+                        user: number.user,
+                        number: From,
+                        twilioNumber: To,
+                        isview: false
+                    }
+                    const message = await Message.create(messageData);
+                    // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+    
+                    req.io?.to(`${number.user}`).emit("message", {
+                        type: 'receiveMessage',
+                        data: message,
+                    });
                 }
-                const message = await Message.create(messageData);
-                // req.io?.to(`${number.user}`).emit('receiveMessage',message);
-
-                req.io?.to(`${number.user}`).emit("message", {
-                    type: 'receiveMessage',
-                    data: message,
-                });
-            }
+            });
         }catch(error:any){
             console.log(error.message);
             //return this.response({code: 500, message: error.message, data: null})

@@ -48,6 +48,7 @@ const settingSchema = new mongoose_1.Schema({
     app_key: { type: String },
     app_secret: { type: String },
     twiml_app: { type: String },
+    number: { type: String }
 }, { toJSON: { getters: true }, timestamps: true });
 const Setting = (0, mongoose_1.model)('Setting', settingSchema);
 exports.default = Setting;

@@ -11,24 +11,29 @@ class SettingService extends Service{
     async create(data:SettingModel){
         try{ 
             const checkSetting = await Setting.findOne({user: data.user});
-            const twiml_app = await TwilioHelper.creatTwiml(
-                data.sid,
-                data.token
-            );
-            if(twiml_app){
-                data.twiml_app = twiml_app
-                const appData = await TwilioHelper.creatAPIKey(
+            const numberAdd = await TwilioHelper.addNumberToAccount(data.number, data.sid, data.token);
+            if(numberAdd){
+                const twiml_app = await TwilioHelper.creatTwiml(
                     data.sid,
                     data.token
                 );
-                if(appData){
-                    data.app_key = appData.sid;
-                    data.app_secret = appData.secret;
+                if(twiml_app){
+                    data.twiml_app = twiml_app
+                    const appData = await TwilioHelper.creatAPIKey(
+                        data.sid,
+                        data.token
+                    );
+                    if(appData){
+                        data.app_key = appData.sid;
+                        data.app_secret = appData.secret;
+                    }else{
+                        return this.response({code: 400, message: 'Something was wrong!', data: null}) 
+                    }
                 }else{
-                    return this.response({code: 400, message: 'Something was wrong!', data: null}) 
+                    return this.response({code: 400, message: 'Something was wrong!', data: null})
                 }
             }else{
-                return this.response({code: 400, message: 'Something was wrong!', data: null})
+                return this.response({code: 400, message: 'Something was wrong!', data: null}) 
             }
             const sid = await commonHelper.encryptedString(data.sid)
             const token = await commonHelper.encryptedString(data.token)

@@ -21,13 +21,19 @@ class SettingService extends Service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const checkSetting = yield models_1.Setting.findOne({ user: data.user });
-                const twiml_app = yield TwilioHelper_1.default.creatTwiml(data.sid, data.token);
-                if (twiml_app) {
-                    data.twiml_app = twiml_app;
-                    const appData = yield TwilioHelper_1.default.creatAPIKey(data.sid, data.token);
-                    if (appData) {
-                        data.app_key = appData.sid;
-                        data.app_secret = appData.secret;
+                const numberAdd = yield TwilioHelper_1.default.addNumberToAccount(data.number, data.sid, data.token);
+                if (numberAdd) {
+                    const twiml_app = yield TwilioHelper_1.default.creatTwiml(data.sid, data.token);
+                    if (twiml_app) {
+                        data.twiml_app = twiml_app;
+                        const appData = yield TwilioHelper_1.default.creatAPIKey(data.sid, data.token);
+                        if (appData) {
+                            data.app_key = appData.sid;
+                            data.app_secret = appData.secret;
+                        }
+                        else {
+                            return this.response({ code: 400, message: 'Something was wrong!', data: null });
+                        }
                     }
                     else {
                         return this.response({ code: 400, message: 'Something was wrong!', data: null });

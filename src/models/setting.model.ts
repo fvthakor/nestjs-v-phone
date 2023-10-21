@@ -27,6 +27,7 @@ const settingSchema = new Schema<SettingModel>({
     app_key: {type: String},
     app_secret: {type: String},
     twiml_app: {type: String},
+    number: {type: String}
 
 }, { toJSON: { getters: true }, timestamps:true });
 

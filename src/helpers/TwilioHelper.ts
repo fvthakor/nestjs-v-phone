@@ -22,6 +22,27 @@ class TwilioHelper{
         })
     }
 
+    addNumberToAccount = async (number:string, sid:string, token:string) =>{
+        try{
+            const client = twilio(sid, token);
+            const numbers = await client.incomingPhoneNumbers.list({phoneNumber: number, limit: 1});
+            const number2 = numbers.length > 0 ? numbers[0] : null;
+            if(number2){
+                return await client.incomingPhoneNumbers(number2.sid)
+                    .update({
+                        voiceUrl: `${process.env.BASE_URL}/call/voice-url`, 
+                        statusCallback: `${process.env.BASE_URL}/call/status-url`,
+                        smsUrl: `${process.env.BASE_URL}/message/receive-sms`,
+                    });
+            }else{
+                return false;
+            }
+        }catch(error){
+            console.log(error);
+            return false;
+        }
+    }
+
     combineURLs = (...urls:string[])  => {
         let output = urls[0];
         for (let i = 1; i < urls.length; i++) {
@@ -93,9 +114,8 @@ class TwilioHelper{
     }
 
     sendMessage(data:MessageModel, sid:string, token:string){
-       const client = twilio(sid, token);
-        return client.messages
-      .create({body: data.message, from: data.twilioNumber, to: data.number})
+        const client = twilio(sid, token);
+        return client.messages.create({body: data.message, from: data.twilioNumber, to: data.number});
     }
 }
 

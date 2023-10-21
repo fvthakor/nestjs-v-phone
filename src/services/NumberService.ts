@@ -13,6 +13,48 @@ class NumberService extends Service{
             return this.response({code: 500, message: error.message, data: null})
         }
     }
+    
+    addNumberToAccount = async (numbers: string[], userId:string) => {
+        try{
+
+            const number = numbers.length > 0 ? numbers[0] : null;
+            if(number){
+                const setting = await Setting.findOne({user: userId})
+                if(setting){
+                    const addNumber = await TwilioHelper.addNumberToAccount(number, setting.sid, setting.token);
+                    if(addNumber){
+                        return this.response({code: 200, message: 'Number added successfully!', data: null}) 
+                    }else{
+                        return this.response({code: 400, message: 'Number not added!', data: null}) 
+                    }
+                }else{
+                    return this.response({code: 400, message: 'Please add setting first!', data: null}) 
+                }
+            }else{
+                return this.response({code: 400, message: 'Please add number!', data: null}) 
+            }
+            // const numbersData = [];
+            // // const number = []
+            // for(let number of numbers){
+            //     const purchasedNumber = await TwilioHelper.addNumberToAccount(number, );
+            //     numbersData.push({
+            //         user: userId,
+            //         sid: purchasedNumber.sid,
+            //         number
+            //     });
+            // }
+            // if(numbersData.length > 0){
+            //     await Number.create(numbersData);
+            //     const insertednumber = await Number.find({number: {$in: numbers}});
+            //     return this.response({code: 201, message: 'Number purchased successfully!', data: insertednumber})
+            // }else{
+            //     return this.response({code: 400, message: 'Number not purchased!', data: null}) 
+            // }
+        }catch(error:any){
+            return this.response({code: 500, message: error.message, data: null})
+        }
+    }
+
 
     purchaseNumbers = async (numbers: string[], userId:string) => {
         try{
@@ -20,9 +62,6 @@ class NumberService extends Service{
             // const number = []
             for(let number of numbers){
                 const purchasedNumber = await TwilioHelper.purchaseNumber(number);
-                // const purchasedNumber = {
-                //     sid: `ABABABABABAABBABB-${new Date().getTime()}`
-                // }
                 numbersData.push({
                     user: userId,
                     sid: purchasedNumber.sid,

@@ -24,10 +24,7 @@ class MessageService extends Service_1.default {
             try {
                 const setting = yield models_1.Setting.findOne({ user: data.user });
                 if (setting) {
-                    console.log('data');
-                    console.log(data);
-                    console.log(setting);
-                    const sendMessage = yield helpers_1.TwilioHelper.sendMessage(data, setting.sid, setting.token);
+                    const sendMessage = process.env.MODE === 'developer' ? { sid: 'TEST-54654564665464-fsdffs' } : yield helpers_1.TwilioHelper.sendMessage(data, setting.sid, setting.token);
                     const messageData = Object.assign(Object.assign({}, data), { sid: sendMessage.sid, type: 'send', isview: true });
                     const message = yield models_1.Message.create(messageData);
                     return this.response({ code: 200, message: 'Message send successfully!', data: message });
@@ -41,29 +38,30 @@ class MessageService extends Service_1.default {
             }
         });
         this.receiveMessage = (req) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
             const response = new VoiceResponse();
             try {
                 const { Body, To, From, SmsSid } = req.body;
-                const number = yield models_1.Number.findOne({ number: To });
-                if (number) {
-                    const messageData = {
-                        message: Body,
-                        sid: SmsSid,
-                        type: 'receive',
-                        user: number.user,
-                        number: From,
-                        twilioNumber: To,
-                        isview: false
-                    };
-                    const message = yield models_1.Message.create(messageData);
-                    // req.io?.to(`${number.user}`).emit('receiveMessage',message);
-                    (_a = req.io) === null || _a === void 0 ? void 0 : _a.to(`${number.user}`).emit("message", {
-                        type: 'receiveMessage',
-                        data: message,
-                    });
-                }
+                models_1.Setting.findOne({ number: To }).then((number) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    if (number) {
+                        const messageData = {
+                            message: Body,
+                            sid: SmsSid,
+                            type: 'receive',
+                            user: number.user,
+                            number: From,
+                            twilioNumber: To,
+                            isview: false
+                        };
+                        const message = yield models_1.Message.create(messageData);
+                        // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+                        (_a = req.io) === null || _a === void 0 ? void 0 : _a.to(`${number.user}`).emit("message", {
+                            type: 'receiveMessage',
+                            data: message,
+                        });
+                    }
+                }));
             }
             catch (error) {
                 console.log(error.message);

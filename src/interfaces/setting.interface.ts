@@ -6,5 +6,6 @@ export interface SettingModel {
     token: string,
     app_key: string,
     app_secret: string,
-    twiml_app: string
+    twiml_app: string,
+    number:string,
 };
