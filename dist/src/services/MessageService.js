@@ -92,6 +92,7 @@ class MessageService extends Service_1.default {
                             },
                         },
                     },
+                    { $sort: { createdAt: -1 } },
                 ]);
                 return this.response({ code: 200, message: 'Number List', data: messages });
             }

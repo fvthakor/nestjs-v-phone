@@ -85,6 +85,7 @@ class MessageService extends Service{
                     },
                   },
                 },
+                { $sort: { createdAt: -1 } },
               ]);
               return this.response({code: 200, message: 'Number List', data: messages})
         }catch(error){
