@@ -25,3 +25,4 @@ sepa.txt
 stripe.txt
 local.env
 documents/*
+package-lock.json
