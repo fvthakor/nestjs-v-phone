@@ -12,6 +12,6 @@ messageRoute.post('/receive-sms', controllers_1.MessageController.receiveMessage
 messageRoute.post('/', AdminAuthMiddleware_1.AdminAuthMiddleware, controllers_1.MessageController.sendMessage);
 messageRoute.get('/number-list', AdminAuthMiddleware_1.AdminAuthMiddleware, controllers_1.MessageController.numberList);
 messageRoute.post('/get-messages', AdminAuthMiddleware_1.AdminAuthMiddleware, controllers_1.MessageController.getMessages);
-messageRoute.post('/read-messages', middleware_1.CheckAuth, controllers_1.MessageController.readMessage);
+messageRoute.post('/read-messages', AdminAuthMiddleware_1.AdminAuthMiddleware, controllers_1.MessageController.readMessage);
 messageRoute.delete('/:id', middleware_1.CheckAuth, controllers_1.MessageController.delete);
 exports.default = messageRoute;
