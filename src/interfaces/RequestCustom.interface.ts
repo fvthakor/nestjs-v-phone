@@ -6,5 +6,6 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 export default interface RequestCustom extends Request {
     userId?:string,
     roleId?:string, 
+    role?: string,
     io?:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 }

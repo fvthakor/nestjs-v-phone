@@ -24,6 +24,14 @@ class AuthController {
             const response = yield services_1.AuthService.logout(req.userId ? req.userId : '', res);
             return res.status(response.code).json(response);
         });
+        this.superAdminlogin = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.AuthService.superAdminlogin(req.body, res, 'super-admin');
+            return res.status(response.code).json(response);
+        });
+        this.adminlogin = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.AuthService.superAdminlogin(req.body, res, 'admin');
+            return res.status(response.code).json(response);
+        });
     }
 }
 exports.default = new AuthController();

@@ -21,6 +21,16 @@ class AuthController{
         const response = await AuthService.logout(req.userId ? req.userId : '', res);
         return res.status(response.code).json(response);
     }
+
+    superAdminlogin = async (req: Request, res:Response) =>{
+        const response = await AuthService.superAdminlogin(req.body, res, 'super-admin');
+        return res.status(response.code).json(response);
+    }
+
+    adminlogin = async (req: Request, res:Response) =>{
+        const response = await AuthService.superAdminlogin(req.body, res, 'admin');
+        return res.status(response.code).json(response);
+    }
 }
 
 export default new AuthController();

@@ -67,8 +67,8 @@ class TwilioHelper {
                 const client = (0, twilio_1.default)(sid, token);
                 var twiml = yield client.applications.create({
                     voiceMethod: "POST",
-                    voiceUrl: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "api/voip/make-call"),
-                    statusCallback: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "api/voip/call-status"),
+                    voiceUrl: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "call/make-call"),
+                    statusCallback: this.combineURLs(process.env.BASE_URL ? process.env.BASE_URL.trim() : '', "call/call-status"),
                     statusCallbackMethod: "POST",
                     friendlyName: "VPhone",
                 });

@@ -7,6 +7,11 @@ const messageSchema = new Schema<MessageModel>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    chatId: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Chat',
+        default: null
+    },
     number: {type: String, required: true},
     twilioNumber: {type: String, required: true},
     sid: { 

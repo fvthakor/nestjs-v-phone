@@ -8,4 +8,5 @@ const controllers_1 = require("../controllers");
 const middleware_1 = require("../middleware");
 const callRoute = express_1.default.Router();
 callRoute.get('/call-token', middleware_1.CheckAuth, controllers_1.CallController.getToken);
+callRoute.post('/make-call', controllers_1.CallController.makeCall);
 exports.default = callRoute;

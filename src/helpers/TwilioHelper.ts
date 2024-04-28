@@ -58,11 +58,11 @@ class TwilioHelper{
                 voiceMethod: "POST",
                 voiceUrl: this.combineURLs(
                 process.env.BASE_URL ?process.env.BASE_URL.trim() : '',
-                "api/voip/make-call"
+                "call/make-call"
                 ),
                 statusCallback: this.combineURLs(
                 process.env.BASE_URL ? process.env.BASE_URL.trim() : '',
-                "api/voip/call-status"
+                "call/call-status"
                 ),
                 statusCallbackMethod: "POST",
                 friendlyName: "VPhone",

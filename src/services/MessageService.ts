@@ -1,23 +1,39 @@
 import { MessageModel, NumberSearchModel } from "../interfaces";
-import { Message, Number, Setting } from "../models";
+import { Chat, Message, Number, Setting } from "../models";
 import Service from "./Service";
 import { TwilioHelper } from "../helpers";
 import RequestCustom from "../interfaces/RequestCustom.interface";
 import { Request } from "express";
 import twilio from "twilio";
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 
 class MessageService extends Service{
     sendMessage = async(data: MessageModel) => {
         try{
             const setting = await Setting.findOne({user: data.user});
             if(setting){
+                // const chatInbox = await Chat.findOne({
+                //     number: data.number,
+                //     twilioNumber: data.twilioNumber,
+                // })
+                let chatId:any = null;
+                // if(chatInbox){
+                //     chatId = chatInbox._id;
+                // }else{
+                //     const chatInbox = await Chat.create({
+                //         user: data.user,
+                //         number: data.number,
+                //         twilioNumber: data.twilioNumber,
+                //     })
+                //     chatId = chatInbox._id;
+                // }
                 const sendMessage = process.env.MODE === 'developer' ? {sid: 'TEST-54654564665464-fsdffs'} : await TwilioHelper.sendMessage(data, setting.sid, setting.token);
                 const messageData:MessageModel = {
                     ...data,
                     sid: sendMessage.sid,
                     type: 'send',
-                    isview: true
+                    isview: true,
+                    chatId: chatId
                 }
                 const message = await Message.create(messageData);
                 return this.response({code: 200, message: 'Message send successfully!', data: message})
@@ -36,6 +52,22 @@ class MessageService extends Service{
             const { Body, To, From, SmsSid } = req.body;
             Setting.findOne({number: To}).then(async (number) => {
                 if(number){
+                    // const chatInbox = await Chat.findOne({
+                    //     number: From,
+                    //     twilioNumber: To,
+                    // })
+                    let chatId:any = null;
+                    // if(chatInbox){
+                    //     chatId = chatInbox._id;
+                    // }else{
+                    //     const chatInbox = await Chat.create({
+                    //         user: number.user,
+                    //         number: From,
+                    //         twilioNumber: To,
+                    //     })
+                    //     chatId = chatInbox._id;
+                    // }
+
                     const messageData:MessageModel = {
                         message: Body,
                         sid: SmsSid,
@@ -43,7 +75,9 @@ class MessageService extends Service{
                         user: number.user,
                         number: From,
                         twilioNumber: To,
-                        isview: false
+                        isview: false,
+                        chatId: chatId
+
                     }
                     const message = await Message.create(messageData);
                     // req.io?.to(`${number.user}`).emit('receiveMessage',message);

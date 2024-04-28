@@ -24,8 +24,23 @@ class MessageService extends Service_1.default {
             try {
                 const setting = yield models_1.Setting.findOne({ user: data.user });
                 if (setting) {
+                    // const chatInbox = await Chat.findOne({
+                    //     number: data.number,
+                    //     twilioNumber: data.twilioNumber,
+                    // })
+                    let chatId = null;
+                    // if(chatInbox){
+                    //     chatId = chatInbox._id;
+                    // }else{
+                    //     const chatInbox = await Chat.create({
+                    //         user: data.user,
+                    //         number: data.number,
+                    //         twilioNumber: data.twilioNumber,
+                    //     })
+                    //     chatId = chatInbox._id;
+                    // }
                     const sendMessage = process.env.MODE === 'developer' ? { sid: 'TEST-54654564665464-fsdffs' } : yield helpers_1.TwilioHelper.sendMessage(data, setting.sid, setting.token);
-                    const messageData = Object.assign(Object.assign({}, data), { sid: sendMessage.sid, type: 'send', isview: true });
+                    const messageData = Object.assign(Object.assign({}, data), { sid: sendMessage.sid, type: 'send', isview: true, chatId: chatId });
                     const message = yield models_1.Message.create(messageData);
                     return this.response({ code: 200, message: 'Message send successfully!', data: message });
                 }
@@ -45,6 +60,21 @@ class MessageService extends Service_1.default {
                 models_1.Setting.findOne({ number: To }).then((number) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     if (number) {
+                        // const chatInbox = await Chat.findOne({
+                        //     number: From,
+                        //     twilioNumber: To,
+                        // })
+                        let chatId = null;
+                        // if(chatInbox){
+                        //     chatId = chatInbox._id;
+                        // }else{
+                        //     const chatInbox = await Chat.create({
+                        //         user: number.user,
+                        //         number: From,
+                        //         twilioNumber: To,
+                        //     })
+                        //     chatId = chatInbox._id;
+                        // }
                         const messageData = {
                             message: Body,
                             sid: SmsSid,
@@ -52,7 +82,8 @@ class MessageService extends Service_1.default {
                             user: number.user,
                             number: From,
                             twilioNumber: To,
-                            isview: false
+                            isview: false,
+                            chatId: chatId
                         };
                         const message = yield models_1.Message.create(messageData);
                         // req.io?.to(`${number.user}`).emit('receiveMessage',message);

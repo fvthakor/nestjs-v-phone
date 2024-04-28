@@ -61,6 +61,33 @@ class AuthService extends Service{
                 data: {}, 
             })
     }
+
+    superAdminlogin = async (data:LoginModel, res:Response, loginType: string) =>{
+        const user = await User.findOne({email: data.email, role: loginType});
+        if(user){
+            const checkPassword =  await bcrypt.compare(data.password, user.password);
+            if(checkPassword){
+                const userData = {
+                    _id: user._id,
+                    name: user.name,
+                    role: user.role,
+                    email: user.email
+                }
+                const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc');
+
+                loginType == 'super-admin' ? res.cookie(`loginToken`,`${token}`) : res.cookie(`adminLoginToken`,`${token}`);
+                return this.response(
+                    {   code: 200, 
+                        message: 'Login successfull!.', 
+                        data: {...userData, token: token}, 
+                    })
+            }else{
+                return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
+            }
+        }else{
+            return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
+        }
+    }
 }
 
 export default new AuthService();

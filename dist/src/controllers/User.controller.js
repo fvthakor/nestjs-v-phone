@@ -32,6 +32,10 @@ class UserController {
             const response = yield services_1.UserService.delete(+req.params.id);
             return res.status(response.code).json(response);
         });
+        this.me = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.UserService.getOne(req.userId ? req.userId : '');
+            return res.status(response.code).json(response);
+        });
     }
 }
 exports.default = new UserController();

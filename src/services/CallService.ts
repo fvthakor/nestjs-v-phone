@@ -1,6 +1,7 @@
+import { Request } from "express";
 import { Setting } from "../models";
 import Service from "./Service";
-const twilio = require('twilio');
+import twilio from "twilio";
 class CallService extends Service{
     getToken = async (user:string) => {
         try{
@@ -42,6 +43,44 @@ class CallService extends Service{
         }catch(error:any){
             return this.response({code: 500, message: error.message, data: null})
         }
+    }
+
+    makeCall = async(req:Request) => {
+        const {phoneNumber} = req.body;
+        const VoiceResponse = twilio.twiml.VoiceResponse;
+        const response = new VoiceResponse();
+        try{
+            //const response = new VoiceResponse();
+            const dial = response.dial({
+                callerId: '+15102885071'
+            });
+            dial.number('+1'+phoneNumber);
+            //const { Body, To, From, SmsSid } = req.body;
+            // Setting.findOne({number: To}).then(async (number) => {
+            //     if(number){
+            //         const messageData:MessageModel = {
+            //             message: Body,
+            //             sid: SmsSid,
+            //             type: 'receive',
+            //             user: number.user,
+            //             number: From,
+            //             twilioNumber: To,
+            //             isview: false
+            //         }
+            //         const message = await Message.create(messageData);
+            //         // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+    
+            //         req.io?.to(`${number.user}`).emit("message", {
+            //             type: 'receiveMessage',
+            //             data: message,
+            //         });
+            //     }
+            // });
+        }catch(error:any){
+            console.log(error.message);
+            //return this.response({code: 500, message: error.message, data: null})
+        }  
+        return response;
     }
 }
 

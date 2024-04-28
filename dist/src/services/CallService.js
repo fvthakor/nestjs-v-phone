@@ -14,13 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const Service_1 = __importDefault(require("./Service"));
-const twilio = require('twilio');
+const twilio_1 = __importDefault(require("twilio"));
 class CallService extends Service_1.default {
     constructor() {
         super(...arguments);
         this.getToken = (user) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const AccessToken = twilio.jwt.AccessToken;
+                const AccessToken = twilio_1.default.jwt.AccessToken;
                 const VoiceGrant = AccessToken.VoiceGrant;
                 const setting = yield models_1.Setting.findOne({ user: user });
                 if (setting) {
@@ -52,6 +52,43 @@ class CallService extends Service_1.default {
             catch (error) {
                 return this.response({ code: 500, message: error.message, data: null });
             }
+        });
+        this.makeCall = (req) => __awaiter(this, void 0, void 0, function* () {
+            const { phoneNumber } = req.body;
+            const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
+            const response = new VoiceResponse();
+            try {
+                //const response = new VoiceResponse();
+                const dial = response.dial({
+                    callerId: '+15102885071'
+                });
+                dial.number('+1' + phoneNumber);
+                //const { Body, To, From, SmsSid } = req.body;
+                // Setting.findOne({number: To}).then(async (number) => {
+                //     if(number){
+                //         const messageData:MessageModel = {
+                //             message: Body,
+                //             sid: SmsSid,
+                //             type: 'receive',
+                //             user: number.user,
+                //             number: From,
+                //             twilioNumber: To,
+                //             isview: false
+                //         }
+                //         const message = await Message.create(messageData);
+                //         // req.io?.to(`${number.user}`).emit('receiveMessage',message);
+                //         req.io?.to(`${number.user}`).emit("message", {
+                //             type: 'receiveMessage',
+                //             data: message,
+                //         });
+                //     }
+                // });
+            }
+            catch (error) {
+                console.log(error.message);
+                //return this.response({code: 500, message: error.message, data: null})
+            }
+            return response;
         });
     }
 }

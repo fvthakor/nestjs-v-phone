@@ -1,10 +1,14 @@
 import express from "express";
-import { AuthController } from "../controllers";
+import { AuthController, UserController } from "../controllers";
+import { AdminAuthMiddleware } from "../middleware/AdminAuthMiddleware";
 
 const authRoute = express.Router();
 
 authRoute.post('/register', AuthController.register)
 authRoute.post('/login', AuthController.login);
-authRoute.get('/logout', AuthController.logout)
+authRoute.get('/logout', AuthController.logout);
+authRoute.post('/super-admin/login', AuthController.superAdminlogin);
+authRoute.post('/admin/login', AuthController.adminlogin);
+authRoute.get('/admin/me',AdminAuthMiddleware, UserController.me);
 
 export default authRoute;

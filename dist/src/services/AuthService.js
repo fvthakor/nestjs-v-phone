@@ -95,6 +95,32 @@ class AuthService extends Service_1.default {
                 data: {},
             });
         });
+        this.superAdminlogin = (data, res, loginType) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield models_1.User.findOne({ email: data.email, role: loginType });
+            if (user) {
+                const checkPassword = yield bcrypt.compare(data.password, user.password);
+                if (checkPassword) {
+                    const userData = {
+                        _id: user._id,
+                        name: user.name,
+                        role: user.role,
+                        email: user.email
+                    };
+                    const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc');
+                    loginType == 'super-admin' ? res.cookie(`loginToken`, `${token}`) : res.cookie(`adminLoginToken`, `${token}`);
+                    return this.response({ code: 200,
+                        message: 'Login successfull!.',
+                        data: Object.assign(Object.assign({}, userData), { token: token }),
+                    });
+                }
+                else {
+                    return this.response({ code: 400, message: 'Email or Password is wrong!.', data: null });
+                }
+            }
+            else {
+                return this.response({ code: 400, message: 'Email or Password is wrong!.', data: null });
+            }
+        });
     }
 }
 exports.default = new AuthService();

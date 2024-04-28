@@ -3,10 +3,12 @@ import Setting from "./setting.model";
 import Number from "./number.model";
 import Message from "./Message.model";
 import Contact from "./contact.model";
+import Chat from './chat.model'
 export{
     User,
     Setting,
     Number,
     Message,
-    Contact
+    Contact,
+    Chat
 }
