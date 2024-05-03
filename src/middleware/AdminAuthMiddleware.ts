@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import * as jwt from 'jsonwebtoken'
 import RequestCustom from "../interfaces/RequestCustom.interface";
 
+
 export const AdminAuthMiddleware = async (req:RequestCustom, res:Response, next:NextFunction) => {
         try {
             let authHeader = req.headers["authorization"];
