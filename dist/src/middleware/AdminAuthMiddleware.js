@@ -37,9 +37,6 @@ const jwt = __importStar(require("jsonwebtoken"));
 const AdminAuthMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let authHeader = req.headers["authorization"];
-        if (!authHeader) {
-            authHeader = req.cookies['adminLoginToken'];
-        }
         if (!authHeader)
             return res.status(401).json({ code: 401, message: 'Please provide auth token!', data: null });
         const accessToken = process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc';

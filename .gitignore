@@ -4,7 +4,7 @@
 /documents/*
 /storage/*.key
 /vendor
-
+firebase.json
 development.env
 .env
 .env.development

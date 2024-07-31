@@ -25,3 +25,4 @@ __exportStar(require("./Number.interface"), exports);
 __exportStar(require("./Message.interface"), exports);
 __exportStar(require("./Contact.interface"), exports);
 __exportStar(require("./Chat.interface"), exports);
+__exportStar(require("./Plan.interface"), exports);

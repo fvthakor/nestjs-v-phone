@@ -36,6 +36,14 @@ class UserController {
             const response = yield services_1.UserService.getOne(req.userId ? req.userId : '');
             return res.status(response.code).json(response);
         });
+        this.profileUpdate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.UserService.update(req.userId ? req.userId : '', {
+                email: req.body.email,
+                name: req.body.name,
+                isProfileUpdate: true
+            });
+            return res.status(response.code).json(response);
+        });
     }
 }
 exports.default = new UserController();

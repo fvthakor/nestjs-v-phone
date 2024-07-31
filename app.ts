@@ -90,6 +90,91 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 
+app.post('/api/aviationstack', async (req: Request, res: Response) => {
+  try{
+    console.log('req.body',req.body);
+    const [iataCode, arr_iata, airline_iata, flight_number, DD, MM, YYYY, type] = req.body;
+    const axios = require('axios');
+    // const airline_name = type && type.trim() != '' ? {airline_name: type} :{}; 
+    const departure_date = `${YYYY}-${MM}-${DD}`;
+    const params = {
+      access_key: process.env.FLIGHT_KEY,
+      iataCode: iataCode,
+      // arr_iata: arr_iata,
+      airline_iata: airline_iata,
+      flight_number: flight_number,
+      date:  departure_date,
+      type: "departure"
+    }
+
+    axios.get('https://api.aviationstack.com/v1/flightsFuture', {params})
+  .then((response:any) => {
+    const apiResponse = response.data;
+    if(apiResponse.data.length > 0){
+      const flights = apiResponse.data.filter((item:any) => {
+        return (
+          (item.arrival.iataCode === arr_iata || item.arrival.iataCode === arr_iata.toLowerCase()) 
+          && item.flight.number == flight_number
+          && item.airline.iataCode == airline_iata.toLowerCase())
+      });
+      if(flights.length === 0){
+        return res.status(400).json({message: 'data not found!'});
+      }
+      const eligibleFlights =  flights[0];
+
+      const timeDifferenceInMinutes = (date:string, startTime:string, endTime:string) => {
+        let startDateTime:any = new Date(`${date}T${startTime}:00`);
+        let endDateTime:any = new Date(`${date}T${endTime}:00`);
+
+    // If the end time is earlier than the start time, it means the period crosses midnight
+    if (endDateTime <= startDateTime) {
+        // Add one day to the end time
+        endDateTime.setDate(endDateTime.getDate() + 1);
+    }
+
+    // Calculate the difference in milliseconds
+    let differenceInMilliseconds = endDateTime - startDateTime;
+
+    // Convert the difference to minutes
+    let differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+
+    // Format the end date as a string
+    let endDateFormatted = endDateTime.toISOString().split('T')[0];
+
+    return {
+        minutes: differenceInMinutes,
+        endDate: endDateFormatted
+    };
+    }
+    const flightTimeData = timeDifferenceInMinutes(departure_date, eligibleFlights?.departure?.scheduledTime, eligibleFlights?.arrival?.scheduledTime,)
+      const dateData = [DD, MM , YYYY];
+
+      const [ariarrivalYear, ariarrivalMonth, ariarrivalDay] = flightTimeData.endDate.split('-');
+
+      const airlineData = eligibleFlights?.aircraft && eligibleFlights?.aircraft?.modelText ? eligibleFlights?.aircraft.modelText : '';
+      const data = [
+        eligibleFlights.departure?.iataCode.toUpperCase(), eligibleFlights?.arrival?.iataCode.toUpperCase(), eligibleFlights?.airline?.iataCode.toUpperCase(), eligibleFlights?.flight?.number, ...dateData, '',eligibleFlights?.departure?.scheduledTime, eligibleFlights?.arrival?.scheduledTime, flightTimeData.minutes, ariarrivalDay, ariarrivalMonth, ariarrivalYear, airlineData
+      ]
+      return res.status(200).json(data);
+    }else{
+      return res.status(400).json({message: 'data not found!'});
+    }
+   
+
+  }).catch((error:any) => {
+    console.log(error);
+    return res.status(500).json({error: error.message});
+  });
+  
+
+   
+  }catch(error:any){
+    console.log(error);
+    return res.status(500).json({error: error.message});
+  }
+  
+});
+
 
 // const encriptedString = cipher('testtesttest');
 // const enString = encriptedString('test');

@@ -7,7 +7,7 @@ class UserService extends Service{
     async create(data:UserModel){
         try{ 
             console.log('data',data);
-            const hash = await bcrypt.hash(data.password, process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
+            const hash = await bcrypt.hash(data.password!, process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
             const user = await User.create({...data, password: hash});
             return this.response({code: 201, message: 'User added successfully!', data: user})
         }catch(error){

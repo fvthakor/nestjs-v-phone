@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CallController = exports.ContactController = exports.MessageController = exports.NumberController = exports.SettingController = exports.UserController = exports.AuthController = void 0;
+exports.PlanController = exports.CallController = exports.ContactController = exports.MessageController = exports.NumberController = exports.SettingController = exports.UserController = exports.AuthController = void 0;
 const auth_controller_1 = __importDefault(require("./auth.controller"));
 exports.AuthController = auth_controller_1.default;
 const User_controller_1 = __importDefault(require("./User.controller"));
@@ -18,3 +18,5 @@ const ContactController_1 = __importDefault(require("./ContactController"));
 exports.ContactController = ContactController_1.default;
 const CallController_1 = __importDefault(require("./CallController"));
 exports.CallController = CallController_1.default;
+const plan_controller_1 = __importDefault(require("./plan.controller"));
+exports.PlanController = plan_controller_1.default;

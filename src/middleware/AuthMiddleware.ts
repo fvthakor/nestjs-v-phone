@@ -5,10 +5,10 @@ import RequestCustom from "../interfaces/RequestCustom.interface";
 export const CheckAuth = async (req:RequestCustom, res:Response, next:NextFunction) => {
     
         try {
-            let authHeader = req.headers["authorization"];
-            if(!authHeader){
-                authHeader = req.cookies['loginToken']
-            }
+            let authHeader:any = req.headers["superadmin"];
+            // if(!authHeader){
+            //     authHeader = req.cookies['loginToken']
+            // }
             if(!authHeader)
             return res.status(401).json({code:401, message: 'Please provide auth token!', data: null})
             const accessToken = process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc'

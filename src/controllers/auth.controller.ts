@@ -28,7 +28,7 @@ class AuthController{
     }
 
     adminlogin = async (req: Request, res:Response) =>{
-        const response = await AuthService.superAdminlogin(req.body, res, 'admin');
+        const response = await AuthService.adminlogin(req.body, res, 'admin');
         return res.status(response.code).json(response);
     }
 }

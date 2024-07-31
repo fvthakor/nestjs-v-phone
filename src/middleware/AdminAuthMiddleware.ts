@@ -5,12 +5,9 @@ import RequestCustom from "../interfaces/RequestCustom.interface";
 
 export const AdminAuthMiddleware = async (req:RequestCustom, res:Response, next:NextFunction) => {
         try {
-            let authHeader = req.headers["authorization"];
-            if(!authHeader){
-                authHeader = req.cookies['adminLoginToken']
-            }
+            let authHeader:any = req.headers["authorization"];
             if(!authHeader)
-            return res.status(401).json({code:401, message: 'Please provide auth token!', data: null})
+                return res.status(401).json({code:401, message: 'Please provide auth token!', data: null})
             const accessToken = process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc'
             const decoded:any = await jwt.verify(authHeader, accessToken);
             if(decoded){

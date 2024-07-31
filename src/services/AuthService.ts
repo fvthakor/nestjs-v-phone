@@ -14,7 +14,7 @@ class AuthService extends Service{
             if(checkEmail){
                 return this.response({ code: 400,  message: 'Email Already exits!', data: []});
             }
-            const hash = await bcrypt.hash(data.password, process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
+            const hash = await bcrypt.hash(data.password!, process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
             const user = await User.create({...data, password: hash})
             return this.response(
                 {   code: 200, 
@@ -29,7 +29,7 @@ class AuthService extends Service{
     login = async (data:LoginModel, res:Response) =>{
         const user = await User.findOne({email: data.email});
         if(user){
-            const checkPassword =  await bcrypt.compare(data.password, user.password);
+            const checkPassword =  await bcrypt.compare(data.password, user.password!);
             if(checkPassword){
                 const userData = {
                     _id: user._id,
@@ -65,7 +65,7 @@ class AuthService extends Service{
     superAdminlogin = async (data:LoginModel, res:Response, loginType: string) =>{
         const user = await User.findOne({email: data.email, role: loginType});
         if(user){
-            const checkPassword =  await bcrypt.compare(data.password, user.password);
+            const checkPassword =  await bcrypt.compare(data.password, user.password!);
             if(checkPassword){
                 const userData = {
                     _id: user._id,
@@ -84,6 +84,38 @@ class AuthService extends Service{
             }else{
                 return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
             }
+        }else{
+            return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
+        }
+    }
+
+    adminlogin = async (data:LoginModel, res:Response, loginType: string) =>{
+        const user = await User.findOne({number: data.number, role: loginType});
+        let userData = user;
+        if(!user){
+            const hash = await bcrypt.hash('123456', process.env.PASSWORD_SALT ? +process.env.PASSWORD_SALT : 10);
+            userData = await User.create({
+                number: data.number,
+                name: 'undefined',
+                email: 'undefined',
+                password: hash
+            });        
+        }
+        if(userData){
+                const userData2 = {
+                    _id: userData._id,
+                    name: userData.name,
+                    role: userData.role,
+                    email: userData.email,
+                    isProfileUpdate: userData.isProfileUpdate
+                }
+                const token = jwt.sign(userData2, process.env.ACCESS_TOKEN_SECRET ? process.env.ACCESS_TOKEN_SECRET : 'drc');
+
+                loginType == 'super-admin' ? res.cookie(`loginToken`,`${token}`) : res.cookie(`adminLoginToken`,`${token}`);
+                return this.response({   code: 200, 
+                    message: 'Login successfull!.', 
+                    data: {...userData2, token: token}, 
+                });
         }else{
             return this.response({code: 400, message: 'Email or Password is wrong!.', data: null})
         }

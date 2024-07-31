@@ -5,6 +5,7 @@ import NumberController from "./NumberController";
 import MessageController from "./MessageController";
 import ContactController from "./ContactController";
 import CallController from "./CallController";
+import PlanController from "./plan.controller";
 export {
     AuthController,
     UserController,
@@ -12,5 +13,6 @@ export {
     NumberController,
     MessageController,
     ContactController,
-    CallController
+    CallController,
+    PlanController
 }

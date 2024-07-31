@@ -5,6 +5,8 @@ import NumberService from "./NumberService";
 import MessageService from "./MessageService";
 import ContactService from "./ContactService";
 import CallService from "./CallService";
+import PlanService from "./PlanService";
+
 export {
     AuthService,
     UserService,
@@ -12,5 +14,6 @@ export {
     NumberService,
     MessageService,
     ContactService,
-    CallService
+    CallService,
+    PlanService
 }
